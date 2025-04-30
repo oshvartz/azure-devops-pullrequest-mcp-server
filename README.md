@@ -10,6 +10,17 @@ This MCP server is designed as a learning project to demonstrate integration wit
 - Fetching pull request threads/comments
 - Creating new comment threads on specific code locations
 
+## Project Status
+
+**DISCLAIMER: This project is still a Work in Progress (WIP)**
+
+### Upcoming Features
+- [ ] Package server as a dotnet tool for easier installation and usage
+- [ ] Enhanced thread support:
+  - [ ] Ability to respond to existing threads
+  - [ ] Add comments to existing threads
+  - [ ] Better thread management capabilities
+
 ## Usage Examples
 
 ### PR Review Workflow
