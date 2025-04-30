@@ -34,13 +34,15 @@ Add the following configuration to the `mcpServers` object:
 {
   "mcpServers": {
     "azure-devops-pr": {
+      "autoApprove": [],
+      "disabled": false,
+      "timeout": 60,
       "command": "dotnet",
       "args": ["path/to/bin/Release/net8.0/AzureDevopsPullrequestMcpServer.dll"],
       "env": {
         "AZURE_DEVOPS_PAT": "your-pat-token"
       },
-      "disabled": false,
-      "autoApprove": []
+      "transportType": "stdio"
     }
   }
 }
@@ -49,6 +51,12 @@ Add the following configuration to the `mcpServers` object:
 Replace:
 - `path/to` with the actual path to your built DLL
 - `your-pat-token` with your Azure DevOps Personal Access Token
+
+Configuration options:
+- `timeout`: Operation timeout in seconds (default: 60)
+- `transportType`: Communication protocol (using "stdio")
+- `disabled`: Whether the server is disabled
+- `autoApprove`: List of operations that don't require explicit approval
 
 The server will appear in the Connected MCP Servers section as:
 ```
@@ -119,6 +127,23 @@ Creates a new comment thread at a specific location in code.
 
 ## Usage Examples
 
+### PR Review Workflow
+To perform a pull request review, you can use the following prompt template:
+
+```
+I want us to review together PR https://dev.azure.com/org/project/_git/repo/pullrequest/123 
+First let's have high level review of the PR context and then let's drill down to changed files 
+and what was changed there - please share if you have any suggestions or you notice any issues. 
+Please verify you are in the local folder of the repo we are doing PR on and switch to the PR 
+branch to be able to look at files.
+```
+
+This will trigger the following workflow:
+1. Retrieve PR details using GetPrDetails tool
+2. Analyze PR context and scope
+3. Review changed files in local repo
+4. Provide suggestions using CreatePrThread tool
+
 ### Creating a New Thread
 ```csharp
 var input = new AdoCreateThreadInput 
@@ -133,6 +158,28 @@ var input = new AdoCreateThreadInput
     }
 };
 ```
+
+### Example Review Session
+```
+Prompts you can use during the review:
+
+1. Get PR Overview:
+"Let's review PR https://dev.azure.com/org/project/_git/repo/pullrequest/123"
+
+2. Focus on Specific File:
+"Can you analyze the changes in src/file.cs?"
+
+3. Add Comment:
+"Please add a comment on line 45 of src/file.cs suggesting to use async/await"
+
+4. Get Existing Comments:
+"Show me all the review comments in this PR"
+```
+
+Each of these prompts will utilize the appropriate MCP tools:
+- GetPrDetails for PR information
+- GetPrThreads for existing comments
+- CreatePrThread for adding new comments
 
 ## Development
 
