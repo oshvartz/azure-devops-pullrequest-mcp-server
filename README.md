@@ -92,10 +92,9 @@ Each of these prompts will utilize the appropriate MCP tools:
 dotnet build -c Release
 ```
 
-3. Add the MCP server to your VSCode settings by modifying:
-`c:\Users\ofshvart\AppData\Roaming\Code\User\globalStorage\saoudrizwan.claude-dev\settings\cline_mcp_settings.json`
+3. Add the MCP server to your VSCode settings by modifying the MCP settings JSON file.
 
-Add the following configuration to the `mcpServers` object:
+Add the following configuration to the `mcpServers` object in your configuration file:
 
 ```json
 {
