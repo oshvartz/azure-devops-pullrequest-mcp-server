@@ -14,7 +14,7 @@ public static class AdoPullRequestTool
     {
         var prInfo = urlParser.ParsePullRequestUrl(input.PrUrl);
             
-        await client.InitializeConnectionAsync(prInfo.Organization, Environment.GetEnvironmentVariable("AZURE_DEVOPS_PAT") ?? string.Empty);
+        await client.InitializeConnectionAsync(prInfo.Organization);
 
         var prDetails = await client.GetPullRequestAsync(prInfo.Project, prInfo.Repository, prInfo.PullRequestId);
 
@@ -29,7 +29,7 @@ public static class AdoPullRequestTool
     {
         var prInfo = urlParser.ParsePullRequestUrl(input.PrUrl);
             
-        await client.InitializeConnectionAsync(prInfo.Organization, Environment.GetEnvironmentVariable("AZURE_DEVOPS_PAT") ?? string.Empty);
+        await client.InitializeConnectionAsync(prInfo.Organization);
 
         var threads = await client.GetFilteredPullRequestThreadsAsync(
             prInfo.Project,
@@ -49,7 +49,7 @@ public static class AdoPullRequestTool
     {
         var prInfo = urlParser.ParsePullRequestUrl(input.PrUrl);
             
-        await client.InitializeConnectionAsync(prInfo.Organization, Environment.GetEnvironmentVariable("AZURE_DEVOPS_PAT") ?? string.Empty);
+        await client.InitializeConnectionAsync(prInfo.Organization);
 
         var thread = await client.CreateThreadAsync(
             prInfo.Project,

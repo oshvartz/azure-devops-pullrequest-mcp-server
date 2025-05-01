@@ -80,9 +80,17 @@ Each of these prompts will utilize the appropriate MCP tools:
 ## Requirements
 
 - .NET 8.0 SDK
-- Azure DevOps Personal Access Token (PAT) with the following scopes:
-  - `Code (Read & Write)`
-  - `Pull Request Threads (Read & Write)`
+- One of the following authentication methods:
+  1. **Recommended: Azure Identity Authentication**
+     - Uses DefaultAzureCredential from Azure.Identity
+     - More secure as it supports managed identities and other Azure authentication methods
+     - No PAT required
+  
+  2. **Legacy: Personal Access Token (PAT)**
+     - Not recommended for security reasons
+     - If you must use PAT, it requires the following scopes:
+       - `Code (Read & Write)`
+       - `Pull Request Threads (Read & Write)`
 
 ## Building and Installing the MCP Server
 
@@ -106,7 +114,9 @@ Add the following configuration to the `mcpServers` object in your configuration
       "command": "dotnet",
       "args": ["path/to/bin/Release/net8.0/AzureDevopsPullrequestMcpServer.dll"],
       "env": {
-        "AZURE_DEVOPS_PAT": "your-pat-token"
+        // Optional: Only needed if using PAT authentication (not recommended)
+        // "AZURE_DEVOPS_PAT": "your-pat-token"
+        // If AZURE_DEVOPS_PAT is not set, DefaultAzureCredential will be used
       },
       "transportType": "stdio"
     }
@@ -116,7 +126,9 @@ Add the following configuration to the `mcpServers` object in your configuration
 
 Replace:
 - `path/to` with the actual path to your built DLL
-- `your-pat-token` with your Azure DevOps Personal Access Token
+- `your-pat-token` with your Azure DevOps Personal Access Token (only if using PAT authentication)
+
+Note: If AZURE_DEVOPS_PAT is not provided in the configuration, the server will automatically use DefaultAzureCredential for authentication, which is the recommended approach.
 
 Configuration options:
 - `timeout`: Operation timeout in seconds (default: 60)
@@ -136,14 +148,26 @@ With the following available tools:
 
 ## Usage
 
-The application accepts command-line arguments for the PAT and PR URL:
+The application supports two authentication methods:
 
+1. **Using Azure Identity (Recommended)**
 ```bash
+# DefaultAzureCredential will be used automatically if PAT is not provided
+dotnet run -- --pr-url <azure-devops-pr-url>
+```
+
+2. **Using Personal Access Token (Legacy)**
+```bash
+# Not recommended for security reasons
 dotnet run -- --pat <your-pat-token> --pr-url <azure-devops-pr-url>
 ```
 
 Example:
 ```bash
+# Using Azure Identity (Recommended)
+dotnet run -- --pr-url https://dev.azure.com/org/project/_git/repo/pullrequest/123
+
+# Using PAT (Not Recommended)
 dotnet run -- --pat abc123... --pr-url https://dev.azure.com/org/project/_git/repo/pullrequest/123
 ```
 
